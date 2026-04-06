@@ -49,12 +49,14 @@ class Network_Plugin_Manager {
             return;
         }
 
+        // Enqueue Dashicons (Built-in WP)
+        wp_enqueue_style( 'dashicons' );
+
         // Enqueue Google Fonts
         wp_enqueue_style( 'nppm-google-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', array(), null );
         
-        // Inline CSS
-        wp_enqueue_style( 'nppm-admin-style', false );
-        wp_add_inline_style( 'nppm-admin-style', '
+        // Inline CSS - Attach to nppm-google-fonts for guaranteed output
+        $css = '
             :root {
                 --nppm-primary: #6366f1;
                 --nppm-primary-light: #818cf8;
@@ -71,6 +73,7 @@ class Network_Plugin_Manager {
                 --nppm-radius: 12px;
                 --nppm-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
                 --nppm-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+                --nppm-glass: rgba(255, 255, 255, 0.8);
             }
 
             .nppm-wrap { 
@@ -81,10 +84,11 @@ class Network_Plugin_Manager {
             }
 
             .nppm-wrap h1 {
-                font-size: 28px;
-                font-weight: 700;
-                color: var(--nppm-text);
-                margin-bottom: 24px;
+                font-size: 28px !important;
+                font-weight: 700 !important;
+                color: var(--nppm-text) !important;
+                margin-bottom: 24px !important;
+                padding: 0 !important;
             }
 
             /* Notices */
@@ -127,7 +131,7 @@ class Network_Plugin_Manager {
                 justify-content: space-between;
                 align-items: center;
                 background: var(--nppm-card);
-                padding: 20px;
+                padding: 16px 20px;
                 border-radius: var(--nppm-radius);
                 border: 1px solid var(--nppm-border);
                 margin-bottom: 24px;
@@ -136,24 +140,26 @@ class Network_Plugin_Manager {
                 top: 32px;
                 z-index: 100;
                 backdrop-filter: blur(8px);
-                background: rgba(255, 255, 255, 0.9);
+                background: var(--nppm-glass);
             }
 
             .nppm-controls { display: flex; gap: 16px; align-items: center; }
             .nppm-search-wrapper { position: relative; }
             .nppm-search { 
-                padding: 10px 16px 10px 40px; 
+                padding: 10px 16px 10px 40px !important; 
                 width: 320px; 
-                border: 1px solid var(--nppm-border); 
-                border-radius: 8px;
-                font-size: 14px;
-                transition: all 0.2s;
+                border: 1px solid var(--nppm-border) !important; 
+                border-radius: 8px !important;
+                font-size: 14px !important;
+                transition: all 0.2s !important;
+                height: auto !important;
+                box-sizing: border-box !important;
             }
-            .nppm-search:focus { border-color: var(--nppm-primary); box-shadow: 0 0 0 3px var(--nppm-primary-bg); outline: none; }
-            .nppm-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--nppm-text-muted); }
+            .nppm-search:focus { border-color: var(--nppm-primary) !important; box-shadow: 0 0 0 3px var(--nppm-primary-bg) !important; outline: none; }
+            .nppm-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--nppm-text-muted); z-index: 1; }
 
             .nppm-btn {
-                padding: 10px 20px;
+                padding: 8px 16px;
                 border-radius: 8px;
                 font-weight: 600;
                 cursor: pointer;
@@ -163,6 +169,7 @@ class Network_Plugin_Manager {
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
+                font-size: 13px;
             }
             .nppm-btn:hover { background: #f1f5f9; border-color: var(--nppm-text-muted); }
             .nppm-btn.primary { background: var(--nppm-primary); color: white; border: none; }
@@ -199,9 +206,6 @@ class Network_Plugin_Manager {
             .nppm-site-info h3 { margin: 0; font-size: 18px; font-weight: 700; color: var(--nppm-text); }
             .nppm-site-info span { font-size: 12px; color: var(--nppm-text-muted); display: block; margin-top: 4px; }
             
-            .nppm-card-actions { padding: 8px 0; border-top: 1px solid var(--nppm-border); margin-top: auto; background: #fafafa; display: flex; justify-content: center; }
-            .nppm-card-actions a { font-size: 12px; font-weight: 600; text-decoration: none; color: var(--nppm-primary); }
-
             .nppm-card-body { padding: 20px; }
             
             /* Custom Toggles */
@@ -250,7 +254,6 @@ class Network_Plugin_Manager {
                 box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             }
             input:checked + .nppm-slider { background-color: var(--nppm-danger); }
-            input:focus + .nppm-slider { box-shadow: 0 0 1px var(--nppm-danger); }
             input:checked + .nppm-slider:before { transform: translateX(20px); }
             
             /* Matrix View Modernization */
@@ -288,9 +291,9 @@ class Network_Plugin_Manager {
                 bottom: 20px;
                 left: 50%;
                 transform: translateX(-50%);
-                background: rgba(255, 255, 255, 0.9);
+                background: var(--nppm-glass);
                 backdrop-filter: blur(10px);
-                padding: 16px 30px;
+                padding: 12px 24px;
                 border-radius: 100px;
                 box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
                 border: 1px solid var(--nppm-border);
@@ -311,11 +314,11 @@ class Network_Plugin_Manager {
             .nppm-animate { animation: fadeIn 0.4s ease-out forwards; }
             
             .hidden { display: none !important; }
-        ' );
+        ';
+        wp_add_inline_style( 'nppm-google-fonts', $css );
         
-        // Inline JavaScript
-        wp_enqueue_script( 'nppm-admin-script', false, array( 'jquery' ), $this->version, true );
-        wp_add_inline_script( 'nppm-admin-script', '
+        // Inline JavaScript - Attach to jquery-core
+        $js = '
             jQuery(document).ready(function($) {
                 // View toggle logic
                 $(".nppm-view-btn").on("click", function() {
@@ -339,43 +342,27 @@ class Network_Plugin_Manager {
                     const searchTerm = $(this).val().toLowerCase();
                     
                     searchTimeout = setTimeout(() => {
-                        // Filter Cards
                         $(".nppm-site-card").each(function() {
                             const text = $(this).find(".nppm-site-info").text().toLowerCase();
-                            const matches = text.indexOf(searchTerm) > -1;
-                            $(this).toggleClass("hidden", !matches);
+                            $(this).toggleClass("hidden", text.indexOf(searchTerm) === -1);
                         });
                         
-                        // Filter Matrix rows
                         $(".nppm-matrix-container table tbody tr").each(function() {
                             const text = $(this).find("td:first").text().toLowerCase();
-                            const matches = text.indexOf(searchTerm) > -1;
-                            $(this).toggleClass("hidden", !matches);
+                            $(this).toggleClass("hidden", text.indexOf(searchTerm) === -1);
                         });
                         
                         updateStats();
                     }, 200);
                 });
                 
-                // Site Select/Deselect
                 $(".nppm-select-all-site").on("click", function(e) {
                     e.preventDefault();
-                    const card = $(this).closest(".nppm-site-card");
-                    const checkboxes = card.find("input[type=checkbox]");
+                    const checkboxes = $(this).closest(".nppm-site-card").find("input[type=checkbox]");
                     const someUnchecked = checkboxes.filter(":not(:checked)").length > 0;
                     checkboxes.prop("checked", someUnchecked).trigger("change");
                 });
 
-                // Plugin Matrix Row Select/Deselect
-                $(".nppm-select-row-matrix").on("click", function(e) {
-                    e.preventDefault();
-                    const row = $(this).closest("tr");
-                    const checkboxes = row.find("input[type=checkbox]");
-                    const someUnchecked = checkboxes.filter(":not(:checked)").length > 0;
-                    checkboxes.prop("checked", someUnchecked).trigger("change");
-                });
-                
-                // Matrix Column Select/Deselect
                 $(".nppm-select-col").on("click", function(e) {
                     e.preventDefault();
                     const colIndex = $(this).parent().index() + 1;
@@ -384,34 +371,30 @@ class Network_Plugin_Manager {
                     checkboxes.prop("checked", someUnchecked).trigger("change");
                 });
                 
-                // Global Bulk Actions
                 $("#nppm-bulk-disable").on("click", function() {
-                    if(confirm("Disable all network plugins on all CURRENTLY VISIBLE sites?")) {
+                    if(confirm("Disable all network plugins on visible sites?")) {
                         $(".nppm-site-card:not(.hidden) input[type=checkbox]").prop("checked", true).trigger("change");
                     }
                 });
                 
                 $("#nppm-bulk-enable").on("click", function() {
-                    if(confirm("Enable all network plugins on all CURRENTLY VISIBLE sites?")) {
+                    if(confirm("Enable all network plugins on visible sites?")) {
                         $(".nppm-site-card:not(.hidden) input[type=checkbox]").prop("checked", false).trigger("change");
                     }
                 });
 
-                // Update Stats
                 $("input[type=checkbox]").on("change", function() {
                     updateStats();
                 });
                 
                 function updateStats() {
-                    const visibleSites = $(".nppm-site-card:not(.hidden)").length;
-                    const totalDisabled = $(":checkbox:checked").length;
-                    $("#nppm-total-sites").text(visibleSites);
-                    $("#nppm-total-disabled").text(totalDisabled);
+                    $("#nppm-total-sites").text($(".nppm-site-card:not(.hidden)").length);
+                    $("#nppm-total-disabled").text($(":checkbox:checked").length);
                 }
-                
                 updateStats();
             });
-        ' );
+        ';
+        wp_add_inline_script( 'jquery-core', $js );
     }
     
     /**
@@ -547,8 +530,7 @@ class Network_Plugin_Manager {
             <div class="nppm-notice info nppm-animate">
                 <span class="dashicons dashicons-info-outline"></span>
                 <div>
-                    <strong>Pro Tip:</strong> Toggle the switches to <strong>disable</strong> network-activated plugins on specific sites. 
-                    Disabled plugins won't load on those sites, improving performance and security.
+                    <strong>Pro Tip:</strong> Toggle the switches to <strong>disable</strong> network-activated plugins on specific sites.
                 </div>
             </div>
 
@@ -562,7 +544,7 @@ class Network_Plugin_Manager {
                     <div class="nppm-stat-value"><?php echo $total_plugins; ?></div>
                 </div>
                 <div class="nppm-stat-item">
-                    <div class="nppm-stat-label">System Overrides</div>
+                    <div class="nppm-stat-label">Active Overrides</div>
                     <div class="nppm-stat-value" id="nppm-total-disabled" style="color: var(--nppm-danger);"><?php echo $total_disabled; ?></div>
                 </div>
             </div>
@@ -570,8 +552,7 @@ class Network_Plugin_Manager {
             <?php if ( empty( $network_plugins ) ) : ?>
                 <div class="nppm-empty-state nppm-animate">
                     <div style="font-size: 64px; margin-bottom: 20px;">📦</div>
-                    <p style="font-size: 20px; font-weight: 600; margin-bottom: 10px;">No Network Plugins Found</p>
-                    <p>Activate some plugins network-wide to start managing overrides here.</p>
+                    <p style="font-size: 20px; font-weight: 600;">No Network Plugins Found</p>
                 </div>
             <?php else : ?>
                 
@@ -582,7 +563,7 @@ class Network_Plugin_Manager {
                         <div class="nppm-controls">
                             <div class="nppm-search-wrapper">
                                 <span class="dashicons dashicons-search nppm-search-icon"></span>
-                                <input type="text" id="nppm-search" class="nppm-search" placeholder="Search sites or plugins..." />
+                                <input type="text" id="nppm-search" class="nppm-search" placeholder="Search sites..." />
                             </div>
                             
                             <div class="nppm-view-toggle">
@@ -596,16 +577,11 @@ class Network_Plugin_Manager {
                         </div>
                         
                         <div class="nppm-bulk-actions">
-                            <button type="button" id="nppm-bulk-disable" class="nppm-btn">
-                                <span class="dashicons dashicons-no"></span> Disable All
-                            </button>
-                            <button type="button" id="nppm-bulk-enable" class="nppm-btn">
-                                <span class="dashicons dashicons-yes"></span> Enable All
-                            </button>
+                            <button type="button" id="nppm-bulk-disable" class="nppm-btn">Disable All</button>
+                            <button type="button" id="nppm-bulk-enable" class="nppm-btn">Enable All</button>
                         </div>
                     </div>
 
-                    <!-- CARDS VIEW -->
                     <div class="nppm-cards-grid nppm-animate">
                         <?php foreach ( $sites as $site ) : 
                             $blog_id = (int) $site->blog_id;
@@ -618,11 +594,9 @@ class Network_Plugin_Manager {
                                 <div class="nppm-card-header">
                                     <div class="nppm-site-info">
                                         <h3><?php echo esc_html( $site_name ); ?></h3>
-                                        <span><?php echo esc_html( parse_url($site_url, PHP_URL_HOST) ); ?> (ID: <?php echo $blog_id; ?>)</span>
+                                        <span><?php echo esc_html( parse_url($site_url, PHP_URL_HOST) ); ?></span>
                                     </div>
-                                    <a href="#" class="nppm-select-all-site" title="Toggle All">
-                                        <span class="dashicons dashicons-image-rotate"></span>
-                                    </a>
+                                    <a href="#" class="nppm-select-all-site"><span class="dashicons dashicons-image-rotate"></span></a>
                                 </div>
                                 <div class="nppm-card-body">
                                     <?php foreach ( $network_plugins as $plugin_file => $val ) :
@@ -635,12 +609,7 @@ class Network_Plugin_Manager {
                                                 <span class="nppm-plugin-version">v<?php echo esc_html( $plugin_data['version'] ); ?></span>
                                             </div>
                                             <label class="nppm-switch">
-                                                <input 
-                                                    type="checkbox" 
-                                                    name="nppm[<?php echo $blog_id; ?>][<?php echo esc_attr( $plugin_file ); ?>]" 
-                                                    value="1" 
-                                                    <?php checked( $checked ); ?>
-                                                />
+                                                <input type="checkbox" name="nppm[<?php echo $blog_id; ?>][<?php echo esc_attr( $plugin_file ); ?>]" value="1" <?php checked( $checked ); ?> />
                                                 <span class="nppm-slider"></span>
                                             </label>
                                         </div>
@@ -650,21 +619,18 @@ class Network_Plugin_Manager {
                         <?php endforeach; ?>
                     </div>
 
-                    <!-- MATRIX VIEW -->
                     <div class="nppm-matrix-container hidden nppm-animate">
                         <table class="nppm-modern-table">
                             <thead>
                                 <tr>
-                                    <th class="nppm-sticky-col">Plugin Name</th>
+                                    <th class="nppm-sticky-col">Plugin</th>
                                     <?php foreach ( $sites as $site ) : 
                                         $blog_id = (int) $site->blog_id;
                                         switch_to_blog( $blog_id );
                                         $site_name = get_bloginfo( 'name' );
                                         restore_current_blog();
                                     ?>
-                                        <th style="text-align: center; cursor: pointer;" title="Toggle Column">
-                                            <div class="nppm-select-col"><?php echo esc_html( wp_trim_words( $site_name, 2, '' ) ); ?></div>
-                                        </th>
+                                        <th style="text-align: center;"><div class="nppm-select-col"><?php echo esc_html( wp_trim_words( $site_name, 2, "" ) ); ?></div></th>
                                     <?php endforeach; ?>
                                 </tr>
                             </thead>
@@ -673,24 +639,14 @@ class Network_Plugin_Manager {
                                     $plugin_data = $this->get_plugin_data( $plugin_file );
                                 ?>
                                     <tr>
-                                        <td class="nppm-sticky-col">
-                                            <div style="font-weight: 700;"><?php echo esc_html( $plugin_data['name'] ); ?></div>
-                                            <div style="font-size: 11px; color: var(--nppm-text-muted); margin-top: 4px;">
-                                                <a href="#" class="nppm-select-row-matrix">Toggle Row</a>
-                                            </div>
-                                        </td>
+                                        <td class="nppm-sticky-col"><strong><?php echo esc_html( $plugin_data['name'] ); ?></strong></td>
                                         <?php foreach ( $sites as $site ) : 
                                             $blog_id = (int) $site->blog_id;
                                             $checked = isset( $disabled[ $blog_id ] ) && isset( $disabled[ $blog_id ][ $plugin_file ] );
                                         ?>
                                             <td style="text-align: center;">
-                                                <label class="nppm-switch" style="transform: scale(0.85);">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        name="nppm[<?php echo $blog_id; ?>][<?php echo esc_attr( $plugin_file ); ?>]" 
-                                                        value="1" 
-                                                        <?php checked( $checked ); ?>
-                                                    />
+                                                <label class="nppm-switch" style="transform: scale(0.8);">
+                                                    <input type="checkbox" name="nppm[<?php echo $blog_id; ?>][<?php echo esc_attr( $plugin_file ); ?>]" value="1" <?php checked( $checked ); ?> />
                                                     <span class="nppm-slider"></span>
                                                 </label>
                                             </td>
@@ -702,22 +658,16 @@ class Network_Plugin_Manager {
                     </div>
 
                     <div class="nppm-footer">
-                        <div class="nppm-footer-text">
-                            Configuration changes take effect instantly.
-                        </div>
-                        <button type="submit" name="submit" class="nppm-btn primary">
-                            <span class="dashicons dashicons-saved"></span> Save Configuration
-                        </button>
+                        <div class="nppm-footer-text">Changes take effect immediately.</div>
+                        <button type="submit" name="submit" class="nppm-btn primary">Save Configuration</button>
                     </div>
                 </form>
-                
             <?php endif; ?>
         </div>
         <?php
     }
 }
 
-// Initialize the plugin
 if ( is_multisite() ) {
     new Network_Plugin_Manager();
 }
